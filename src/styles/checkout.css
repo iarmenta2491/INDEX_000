@@ -18,11 +18,11 @@
 }
 
 .checkout-header h1 {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: 0.05em;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
   color: var(--color-text-primary);
 }
 
@@ -45,10 +45,10 @@
 }
 
 .form-section-title {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.08em;
   font-size: 0.75rem;
   color: var(--color-text-secondary);
   margin-bottom: var(--space-lg);
@@ -112,10 +112,10 @@
 }
 
 .summary-title {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.08em;
   font-size: 0.75rem;
   color: var(--color-text-secondary);
   margin-bottom: var(--space-lg);
@@ -146,11 +146,11 @@
 }
 
 .summary-item-title {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
 }
 
 .summary-item-meta {
@@ -192,11 +192,11 @@
 }
 
 .express-title {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.08em;
   color: var(--color-text-tertiary);
   text-align: center;
   margin-bottom: var(--space-md);

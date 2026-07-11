@@ -135,13 +135,13 @@ const sizes = Object.entries(product.sizes);
   }
 
   .product-top__title {
-    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-family: var(--font-heading, 'Clash Display', sans-serif);
     font-weight: 700;
-    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    font-size: clamp(1.6rem, 3.8vw, 2.8rem);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: -0.02em;
     color: var(--color-text-primary, #EBEAE5);
-    line-height: 1.1;
+    line-height: 1.05;
   }
 
   .product-top__price {
@@ -206,9 +206,9 @@ const sizes = Object.entries(product.sizes);
   }
 
   .product-image-box__label {
-    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-family: var(--font-body, 'Space Mono', monospace);
     font-size: 0.65rem;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.1em;
     color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
     text-transform: uppercase;
     position: relative;
@@ -222,10 +222,10 @@ const sizes = Object.entries(product.sizes);
     width: 100%;
     margin-top: var(--space-md, 1rem);
     padding: 0.6rem 1rem;
-    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-family: var(--font-body, 'Space Mono', monospace);
     font-size: 0.7rem;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-text-secondary, rgba(235, 234, 229, 0.6));
     background: transparent;
@@ -249,9 +249,9 @@ const sizes = Object.entries(product.sizes);
   /* ---- Size Selector ---- */
   .size-selector__label {
     display: block;
-    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-family: var(--font-body, 'Space Mono', monospace);
     font-size: 0.65rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.08em;
     color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
     text-transform: uppercase;
     margin-bottom: var(--space-sm, 0.5rem);
@@ -268,10 +268,10 @@ const sizes = Object.entries(product.sizes);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-family: var(--font-body, 'Space Mono', monospace);
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
     color: var(--color-text-primary, #EBEAE5);
     background: transparent;
     border: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
@@ -352,9 +352,9 @@ const sizes = Object.entries(product.sizes);
 
   /* ---- Shipping Note ---- */
   .shipping-note {
-    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-family: var(--font-body, 'Space Mono', monospace);
     font-size: 0.6rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.05em;
     color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
     text-transform: uppercase;
     padding-top: var(--space-md, 1rem);
