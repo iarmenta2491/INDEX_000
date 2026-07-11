@@ -1,0 +1,189 @@
+---
+// ProductCard.astro — Product grid card with image crossfade and sold-out state
+
+interface Props {
+  product: {
+    id: string;
+    slug: string;
+    title: string;
+    subtitle: string;
+    price: number;
+    images: { primary: string; detail: string; back: string };
+    sizes: Record<string, number>;
+    color: string;
+  };
+  variant: 'large' | 'small';
+  index: number;
+}
+
+const { product, variant, index } = Astro.props;
+
+const isSoldOut = Object.values(product.sizes).every((qty) => qty === 0);
+const href = isSoldOut ? undefined : `/product/${product.slug}`;
+const Tag = isSoldOut ? 'div' : 'a';
+---
+
+<Tag
+  class:list={['product-card', `variant-${variant}`, { 'is-sold-out': isSoldOut }]}
+  {...(href ? { href } : {})}
+  style={`--enter-delay: ${index * 80}ms`}
+>
+  <div class="card-image">
+    <img
+      src={product.images.primary}
+      alt={product.title}
+      class="img img-primary"
+      loading="lazy"
+      decoding="async"
+    />
+    <img
+      src={product.images.detail}
+      alt={`${product.title} detail`}
+      class="img img-detail"
+      loading="lazy"
+      decoding="async"
+    />
+    {isSoldOut && (
+      <div class="sold-out-overlay">
+        <span class="sold-out-label">SOLD OUT</span>
+      </div>
+    )}
+  </div>
+
+  <div class="card-info">
+    <span class="card-title">{product.title}</span>
+    <span class="card-price">${product.price.toFixed(2)}</span>
+    <span class="card-color">{product.color}</span>
+  </div>
+</Tag>
+
+<style>
+  /* ── Card Shell ── */
+  .product-card {
+    display: block;
+    background: #2B2C2C;
+    border-radius: 2px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--color-accent, #EBEAE5);
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    transform: scale(1.02);
+  }
+
+  .product-card.is-sold-out {
+    cursor: default;
+    pointer-events: auto;
+  }
+
+  .product-card.is-sold-out:hover {
+    transform: none;
+  }
+
+  /* ── Image Container ── */
+  .card-image {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #232424;
+  }
+
+  .variant-large .card-image {
+    aspect-ratio: 3 / 4;
+  }
+
+  .variant-small .card-image {
+    aspect-ratio: 1 / 1;
+  }
+
+  .img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.45s ease;
+  }
+
+  .img-primary {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .img-detail {
+    opacity: 0;
+    z-index: 2;
+  }
+
+  .product-card:hover .img-primary {
+    opacity: 0;
+  }
+
+  .product-card:hover .img-detail {
+    opacity: 1;
+  }
+
+  .product-card.is-sold-out:hover .img-primary {
+    opacity: 1;
+  }
+
+  .product-card.is-sold-out:hover .img-detail {
+    opacity: 0;
+  }
+
+  /* ── Sold Out Overlay ── */
+  .sold-out-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 26, 26, 0.55);
+  }
+
+  .sold-out-label {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: rgba(235, 234, 229, 0.5);
+    text-transform: uppercase;
+  }
+
+  /* ── Card Info ── */
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.875rem 1rem 1rem;
+  }
+
+  .card-title {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent, #EBEAE5);
+  }
+
+  .card-price {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--color-accent, #EBEAE5);
+  }
+
+  .card-color {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 400;
+    font-size: 0.7rem;
+    color: rgba(235, 234, 229, 0.45);
+    text-transform: capitalize;
+    margin-top: 0.1rem;
+  }
+</style>

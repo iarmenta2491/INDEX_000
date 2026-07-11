@@ -1,0 +1,524 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import products from '../../data/products.json';
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const sizes = Object.entries(product.sizes);
+---
+
+<BaseLayout
+  title={product.title}
+  description={`${product.title} — ${product.subtitle}. ${product.color}. $${product.price}`}
+>
+
+  <!-- Top Block: Title + Price -->
+  <section class="product-top">
+    <div class="product-top__row">
+      <h1 class="product-top__title">{product.title}</h1>
+      <span class="product-top__price">${product.price}</span>
+    </div>
+    <div class="product-top__meta">
+      <span class="product-top__subtitle">{product.subtitle}</span>
+      <span class="product-top__divider">/</span>
+      <span class="product-top__color">{product.color}</span>
+    </div>
+  </section>
+
+  <!-- Bottom Workspace: 3-Column Grid -->
+  <section class="product-workspace">
+
+    <!-- Column 1: Editorial Image -->
+    <div class="product-col product-col--editorial">
+      <div class="product-image-box" style="aspect-ratio: 3/4;">
+        <img
+          src={product.images.detail}
+          alt={`${product.title} editorial fit`}
+          class="product-image-box__img"
+          loading="lazy"
+        />
+        <span class="product-image-box__label">EDITORIAL FIT</span>
+      </div>
+    </div>
+
+    <!-- Column 2: Flat-Lay Product Shot -->
+    <div class="product-col product-col--flatlay">
+      <div class="product-image-box" style="aspect-ratio: 3/4;">
+        <img
+          id="flatlay-image"
+          src={product.images.primary}
+          alt={`${product.title} flat lay`}
+          class="product-image-box__img"
+          data-front={product.images.primary}
+          data-back={product.images.back}
+          loading="lazy"
+        />
+      </div>
+      <button id="toggle-view" class="toggle-btn" type="button">
+        FRONT ↔ BACK
+      </button>
+    </div>
+
+    <!-- Column 3: Checkout -->
+    <div class="product-col product-col--checkout">
+
+      <!-- Size Selector -->
+      <div class="size-selector">
+        <span class="size-selector__label">SIZE</span>
+        <div class="size-selector__grid">
+          {sizes.map(([size, qty]) => (
+            <button
+              type="button"
+              class={`size-btn ${qty === 0 ? 'size-btn--disabled' : ''}`}
+              data-size={size}
+              data-qty={qty}
+              disabled={qty === 0}
+            >
+              {qty === 0 ? <s>{size}</s> : size}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Add to Bag Button -->
+      <button
+        id="add-to-bag"
+        class="add-to-bag"
+        type="button"
+        disabled
+        data-id={product.id}
+        data-slug={product.slug}
+        data-title={product.title}
+        data-price={product.price}
+        data-image={product.images.primary}
+      >
+        ADD TO BAG
+      </button>
+
+      <!-- Specs List -->
+      <ul class="specs-list">
+        {product.specs.map((spec) => (
+          <li class="specs-list__item">— {spec}</li>
+        ))}
+      </ul>
+
+      <!-- Shipping Note -->
+      <p class="shipping-note">SHIPPING: FLAT RATE $6.00 NATIONWIDE</p>
+
+    </div>
+
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* ---- Top Block ---- */
+  .product-top {
+    padding: var(--space-3xl, 4rem) var(--gutter, clamp(1rem, 4vw, 3rem)) var(--space-xl, 2rem);
+    max-width: var(--max-width, 1440px);
+    margin: 0 auto;
+    animation: fadeInUpPDP 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .product-top__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-xl, 2rem);
+    flex-wrap: wrap;
+  }
+
+  .product-top__title {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-primary, #EBEAE5);
+    line-height: 1.1;
+  }
+
+  .product-top__price {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 600;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    color: var(--color-text-primary, #EBEAE5);
+    white-space: nowrap;
+  }
+
+  .product-top__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm, 0.5rem);
+    margin-top: var(--space-sm, 0.5rem);
+  }
+
+  .product-top__subtitle,
+  .product-top__color {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.8rem;
+    color: var(--color-text-secondary, rgba(235, 234, 229, 0.6));
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .product-top__divider {
+    font-size: 0.7rem;
+    color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
+  }
+
+  /* ---- Workspace Grid ---- */
+  .product-workspace {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-xl, 2rem);
+    padding: 0 var(--gutter, clamp(1rem, 4vw, 3rem)) var(--space-5xl, 8rem);
+    max-width: var(--max-width, 1440px);
+    margin: 0 auto;
+    animation: fadeInUpPDP 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  }
+
+  /* ---- Image Box ---- */
+  .product-image-box {
+    background-color: var(--color-bg-surface, #2B2C2C);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .product-image-box__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity var(--transition-base, 300ms cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .product-image-box__label {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ---- Front/Back Toggle ---- */
+  .toggle-btn {
+    display: block;
+    width: 100%;
+    margin-top: var(--space-md, 1rem);
+    padding: 0.6rem 1rem;
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary, rgba(235, 234, 229, 0.6));
+    background: transparent;
+    border: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    cursor: pointer;
+    transition: all var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .toggle-btn:hover {
+    border-color: var(--color-border-hover, rgba(235, 234, 229, 0.4));
+    color: var(--color-text-primary, #EBEAE5);
+  }
+
+  /* ---- Checkout Column ---- */
+  .product-col--checkout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl, 2rem);
+  }
+
+  /* ---- Size Selector ---- */
+  .size-selector__label {
+    display: block;
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
+    text-transform: uppercase;
+    margin-bottom: var(--space-sm, 0.5rem);
+  }
+
+  .size-selector__grid {
+    display: flex;
+    gap: var(--space-xs, 0.25rem);
+  }
+
+  .size-btn {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--color-text-primary, #EBEAE5);
+    background: transparent;
+    border: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    cursor: pointer;
+    transition: all var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .size-btn:hover:not(:disabled) {
+    border-color: var(--color-text-primary, #EBEAE5);
+  }
+
+  .size-btn.selected {
+    background-color: var(--color-text-primary, #EBEAE5);
+    color: var(--color-bg-primary, #1A1A1A);
+    border-color: var(--color-text-primary, #EBEAE5);
+  }
+
+  .size-btn--disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  .size-btn--disabled s {
+    text-decoration: inherit;
+  }
+
+  /* ---- Add to Bag ---- */
+  .add-to-bag {
+    width: 100%;
+    padding: 1rem;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background-color: var(--color-accent, #EBEAE5);
+    color: var(--color-bg-primary, #1A1A1A);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .add-to-bag:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .add-to-bag:not(:disabled):hover {
+    opacity: 0.85;
+  }
+
+  .add-to-bag.added {
+    background-color: var(--color-bg-surface, #2B2C2C);
+    color: var(--color-text-primary, #EBEAE5);
+  }
+
+  /* ---- Specs List ---- */
+  .specs-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs, 0.25rem);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .specs-list__item {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--color-text-secondary, rgba(235, 234, 229, 0.6));
+    letter-spacing: 0.04em;
+    line-height: 1.8;
+  }
+
+  /* ---- Shipping Note ---- */
+  .shipping-note {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
+    text-transform: uppercase;
+    padding-top: var(--space-md, 1rem);
+    border-top: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+  }
+
+  /* ---- Scoped Keyframes ---- */
+  @keyframes fadeInUpPDP {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 767px) {
+    .product-top {
+      padding: var(--space-2xl, 3rem) var(--gutter, clamp(1rem, 4vw, 3rem)) var(--space-lg, 1.5rem);
+    }
+
+    .product-top__row {
+      flex-direction: column;
+      gap: var(--space-sm, 0.5rem);
+    }
+
+    .product-workspace {
+      grid-template-columns: 1fr;
+      gap: var(--space-2xl, 3rem);
+      padding-bottom: var(--space-3xl, 4rem);
+    }
+
+    .size-btn {
+      width: 44px;
+      height: 44px;
+      font-size: 0.7rem;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .product-workspace {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .product-col--checkout {
+      grid-column: 1 / -1;
+      max-width: 480px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // ---- Front/Back Image Toggle ----
+    const flatlayImage = document.getElementById('flatlay-image');
+    const toggleBtn = document.getElementById('toggle-view');
+    let showingFront = true;
+
+    if (toggleBtn && flatlayImage) {
+      toggleBtn.addEventListener('click', () => {
+        const front = flatlayImage.getAttribute('data-front');
+        const back = flatlayImage.getAttribute('data-back');
+
+        showingFront = !showingFront;
+        flatlayImage.style.opacity = '0';
+
+        setTimeout(() => {
+          flatlayImage.src = showingFront ? front : back;
+          flatlayImage.style.opacity = '1';
+        }, 200);
+      });
+    }
+
+    // ---- Size Selection ----
+    const sizeBtns = document.querySelectorAll('.size-btn:not(:disabled)');
+    const addToBagBtn = document.getElementById('add-to-bag');
+    let selectedSize = null;
+
+    sizeBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        // Remove selected from all
+        document.querySelectorAll('.size-btn').forEach((b) => b.classList.remove('selected'));
+        // Add selected to clicked
+        btn.classList.add('selected');
+        selectedSize = btn.getAttribute('data-size');
+
+        // Enable add-to-bag
+        if (addToBagBtn) {
+          addToBagBtn.disabled = false;
+        }
+      });
+    });
+
+    // ---- Add to Bag ----
+    if (addToBagBtn) {
+      addToBagBtn.addEventListener('click', () => {
+        if (!selectedSize) return;
+
+        // Check inventory
+        const sizeBtn = document.querySelector(`.size-btn[data-size="${selectedSize}"]`);
+        const qty = sizeBtn ? parseInt(sizeBtn.getAttribute('data-qty') || '0', 10) : 0;
+        if (qty === 0) return;
+
+        // Read cart from localStorage
+        const cartKey = 'index000_cart';
+        let cart = [];
+        try {
+          cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
+        } catch (e) {
+          cart = [];
+        }
+
+        const productId = addToBagBtn.getAttribute('data-id');
+        const productSlug = addToBagBtn.getAttribute('data-slug');
+        const productTitle = addToBagBtn.getAttribute('data-title');
+        const productPrice = parseFloat(addToBagBtn.getAttribute('data-price') || '0');
+        const productImage = addToBagBtn.getAttribute('data-image');
+
+        // Check if item with same id + size exists
+        const existingIndex = cart.findIndex(
+          (item) => item.id === productId && item.size === selectedSize
+        );
+
+        if (existingIndex > -1) {
+          cart[existingIndex].quantity += 1;
+        } else {
+          cart.push({
+            id: productId,
+            slug: productSlug,
+            title: productTitle,
+            size: selectedSize,
+            price: productPrice,
+            quantity: 1,
+            image: productImage,
+          });
+        }
+
+        // Save cart
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+
+        // Update cart count in header
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const cartCountEl = document.getElementById('cart-count');
+        if (cartCountEl) {
+          cartCountEl.textContent = totalItems.toString();
+          cartCountEl.style.display = totalItems > 0 ? 'inline-flex' : 'none';
+        }
+
+        // Dispatch cart-updated event for CartDrawer
+        window.dispatchEvent(new CustomEvent('cart-updated'));
+
+        // Show 'ADDED' confirmation
+        const originalText = addToBagBtn.textContent;
+        addToBagBtn.textContent = 'ADDED';
+        addToBagBtn.classList.add('added');
+
+        setTimeout(() => {
+          addToBagBtn.textContent = originalText;
+          addToBagBtn.classList.remove('added');
+        }, 1200);
+      });
+    }
+  });
+</script>

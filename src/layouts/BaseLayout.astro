@@ -1,0 +1,58 @@
+---
+// BaseLayout.astro — Root HTML shell for all pages
+
+import Header from '../components/Header.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = `${title} — INDEX_000`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+
+    <!-- OG Meta -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>{pageTitle}</title>
+  </head>
+
+  <body>
+    <Header />
+    <CartDrawer />
+
+    <main class="page-transition-enter">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    padding-top: 64px; /* offset for fixed header */
+    min-height: 100vh;
+  }
+</style>

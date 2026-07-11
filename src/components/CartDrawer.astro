@@ -1,0 +1,505 @@
+---
+// CartDrawer.astro — Slide-in cart panel with dynamic item management
+---
+
+<div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+
+<aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart" aria-hidden="true">
+  <!-- Header -->
+  <div class="drawer-header">
+    <h2 class="drawer-title">YOUR BAG</h2>
+    <button class="drawer-close" id="cart-close" type="button" aria-label="Close cart">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="1" y1="1" x2="17" y2="17" />
+        <line x1="17" y1="1" x2="1" y2="17" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Items -->
+  <div class="drawer-items" id="cart-items">
+    <p class="empty-msg" id="cart-empty">Your bag is empty.</p>
+  </div>
+
+  <!-- Totals -->
+  <div class="drawer-footer" id="cart-footer">
+    <div class="totals">
+      <div class="total-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">$0.00</span>
+      </div>
+      <div class="total-row">
+        <span>Shipping</span>
+        <span id="cart-shipping">$6.00</span>
+      </div>
+      <div class="total-row total-final">
+        <span>Total</span>
+        <span id="cart-total">$6.00</span>
+      </div>
+    </div>
+
+    <button class="btn-checkout" type="button">CHECKOUT</button>
+
+    <div class="express-section">
+      <span class="express-label">EXPRESS CHECKOUT</span>
+      <div class="express-buttons">
+        <button class="express-btn" type="button" aria-label="Pay with Apple Pay">Apple Pay</button>
+        <button class="express-btn" type="button" aria-label="Pay with Google Pay">Google Pay</button>
+        <button class="express-btn" type="button" aria-label="Pay with PayPal">PayPal</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+  const STORAGE_KEY = 'index000_cart';
+  const overlay = document.getElementById('cart-overlay') as HTMLDivElement;
+  const drawer = document.getElementById('cart-drawer') as HTMLElement;
+  const closeBtn = document.getElementById('cart-close') as HTMLButtonElement;
+  const itemsContainer = document.getElementById('cart-items') as HTMLDivElement;
+  const emptyMsg = document.getElementById('cart-empty') as HTMLParagraphElement;
+  const subtotalEl = document.getElementById('cart-subtotal') as HTMLSpanElement;
+  const shippingEl = document.getElementById('cart-shipping') as HTMLSpanElement;
+  const totalEl = document.getElementById('cart-total') as HTMLSpanElement;
+  const footerEl = document.getElementById('cart-footer') as HTMLDivElement;
+  const cartCountEl = document.getElementById('cart-count') as HTMLSpanElement;
+
+  interface CartItem {
+    id: string;
+    slug: string;
+    title: string;
+    size: string;
+    price: number;
+    quantity: number;
+    image: string;
+  }
+
+  function getCart(): CartItem[] {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch {
+      return [];
+    }
+  }
+
+  function saveCart(cart: CartItem[]) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+  }
+
+  function updateHeaderCount() {
+    const cart = getCart();
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    if (cartCountEl) cartCountEl.textContent = String(count);
+    // Also sync any mobile badges
+    document.querySelectorAll('.nav-mobile .cart-badge').forEach(el => {
+      el.textContent = String(count);
+    });
+  }
+
+  function fmt(n: number) {
+    return `$${n.toFixed(2)}`;
+  }
+
+  function renderCart() {
+    const cart = getCart();
+
+    // Clear rendered items (keep emptyMsg)
+    itemsContainer.querySelectorAll('.cart-item').forEach(el => el.remove());
+
+    if (cart.length === 0) {
+      emptyMsg.style.display = '';
+      footerEl.style.display = 'none';
+      updateHeaderCount();
+      return;
+    }
+
+    emptyMsg.style.display = 'none';
+    footerEl.style.display = '';
+
+    cart.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'cart-item';
+      row.dataset.index = String(i);
+      row.innerHTML = `
+        <div class="item-image">
+          <img src="${item.image}" alt="${item.title}" />
+        </div>
+        <div class="item-details">
+          <span class="item-title">${item.title}</span>
+          <span class="item-size">Size: ${item.size}</span>
+          <span class="item-price">${fmt(item.price)}</span>
+          <div class="item-qty">
+            <button class="qty-btn" data-action="dec" data-idx="${i}" type="button" aria-label="Decrease quantity">&minus;</button>
+            <span class="qty-value">${item.quantity}</span>
+            <button class="qty-btn" data-action="inc" data-idx="${i}" type="button" aria-label="Increase quantity">&plus;</button>
+          </div>
+        </div>
+        <button class="item-remove" data-idx="${i}" type="button" aria-label="Remove item">&times;</button>
+      `;
+      itemsContainer.appendChild(row);
+    });
+
+    // Totals
+    const subtotal = cart.reduce((s, it) => s + it.price * it.quantity, 0);
+    const shipping = 6;
+    subtotalEl.textContent = fmt(subtotal);
+    shippingEl.textContent = fmt(shipping);
+    totalEl.textContent = fmt(subtotal + shipping);
+
+    updateHeaderCount();
+  }
+
+  // Quantity & remove handlers (delegated)
+  itemsContainer.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const cart = getCart();
+
+    if (target.classList.contains('qty-btn')) {
+      const idx = Number(target.dataset.idx);
+      const action = target.dataset.action;
+      if (action === 'inc') {
+        cart[idx].quantity++;
+      } else if (action === 'dec') {
+        cart[idx].quantity--;
+        if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+      }
+      saveCart(cart);
+      renderCart();
+    }
+
+    if (target.classList.contains('item-remove')) {
+      const idx = Number(target.dataset.idx);
+      cart.splice(idx, 1);
+      saveCart(cart);
+      renderCart();
+    }
+  });
+
+  // Open / close
+  function openDrawer() {
+    renderCart();
+    overlay.classList.add('is-visible');
+    drawer.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    overlay.classList.remove('is-visible');
+    drawer.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+
+  // Listen for cart-toggle buttons (in header)
+  document.querySelectorAll('.cart-toggle').forEach(btn => {
+    btn.addEventListener('click', openDrawer);
+  });
+
+  // Listen for custom 'cart-updated' events from other components
+  window.addEventListener('cart-updated', () => {
+    renderCart();
+  });
+
+  // Initial badge count
+  updateHeaderCount();
+</script>
+
+<style>
+  /* ── Overlay ── */
+  .cart-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .cart-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── Drawer ── */
+  .cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1200;
+    width: 100%;
+    max-width: 420px;
+    height: 100%;
+    background: #2B2C2C;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden;
+  }
+
+  .cart-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  /* ── Drawer Header ── */
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    flex-shrink: 0;
+  }
+
+  .drawer-title {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    color: var(--color-accent, #EBEAE5);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: var(--color-accent, #EBEAE5);
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .drawer-close:hover {
+    opacity: 0.6;
+  }
+
+  /* ── Items ── */
+  .drawer-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .empty-msg {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.8rem;
+    color: rgba(235, 234, 229, 0.4);
+    text-align: center;
+    padding: 3rem 0;
+    margin: 0;
+  }
+
+  /* Cart item (rendered via JS — global-like selectors needed) */
+  .drawer-items :global(.cart-item) {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    position: relative;
+  }
+
+  .drawer-items :global(.item-image) {
+    width: 72px;
+    height: 90px;
+    background: #232424;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .drawer-items :global(.item-image img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .drawer-items :global(.item-details) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .drawer-items :global(.item-title) {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--color-accent, #EBEAE5);
+    text-transform: uppercase;
+  }
+
+  .drawer-items :global(.item-size) {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.7rem;
+    color: rgba(235, 234, 229, 0.45);
+  }
+
+  .drawer-items :global(.item-price) {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--color-accent, #EBEAE5);
+    margin-top: 0.15rem;
+  }
+
+  .drawer-items :global(.item-qty) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.35rem;
+  }
+
+  .drawer-items :global(.qty-btn) {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    border-radius: 2px;
+    background: none;
+    color: var(--color-accent, #EBEAE5);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .drawer-items :global(.qty-btn:hover) {
+    border-color: var(--color-accent, #EBEAE5);
+  }
+
+  .drawer-items :global(.qty-value) {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.75rem;
+    color: var(--color-accent, #EBEAE5);
+    min-width: 14px;
+    text-align: center;
+  }
+
+  .drawer-items :global(.item-remove) {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+    background: none;
+    border: none;
+    color: rgba(235, 234, 229, 0.35);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 0.15rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+  }
+
+  .drawer-items :global(.item-remove:hover) {
+    color: var(--color-accent, #EBEAE5);
+  }
+
+  /* ── Footer / Totals ── */
+  .drawer-footer {
+    flex-shrink: 0;
+    padding: 1.25rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+  }
+
+  .totals {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.75rem;
+    color: rgba(235, 234, 229, 0.55);
+  }
+
+  .total-final {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-accent, #EBEAE5);
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+  }
+
+  /* ── Checkout Button ── */
+  .btn-checkout {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 0;
+    background: var(--color-accent, #EBEAE5);
+    color: var(--color-bg-primary, #1A1A1A);
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .btn-checkout:hover {
+    opacity: 0.88;
+  }
+
+  /* ── Express Checkout ── */
+  .express-section {
+    margin-top: 1.25rem;
+    text-align: center;
+  }
+
+  .express-label {
+    display: block;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(235, 234, 229, 0.35);
+    margin-bottom: 0.75rem;
+  }
+
+  .express-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .express-btn {
+    flex: 1;
+    padding: 0.6rem 0;
+    background: none;
+    border: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    border-radius: 2px;
+    color: rgba(235, 234, 229, 0.55);
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .express-btn:hover {
+    border-color: rgba(235, 234, 229, 0.4);
+    color: var(--color-accent, #EBEAE5);
+  }
+</style>

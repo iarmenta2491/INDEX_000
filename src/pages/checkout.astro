@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/checkout.css';
+---
+
+<BaseLayout title="Checkout" description="Complete your INDEX_000 order. Secure checkout.">
+  <div class="checkout-page">
+    <div class="checkout-container">
+      <div class="checkout-header">
+        <h1>Checkout</h1>
+      </div>
+
+      <div class="checkout-layout">
+        <!-- Checkout Form -->
+        <form class="checkout-form" id="checkout-form" novalidate>
+          <!-- Contact -->
+          <div class="form-section">
+            <div class="form-section-title">Contact Information</div>
+            <div class="form-row full">
+              <div class="form-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping -->
+          <div class="form-section">
+            <div class="form-section-title">Shipping Address</div>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" name="firstName" placeholder="First" required />
+              </div>
+              <div class="form-field">
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" name="lastName" placeholder="Last" required />
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-field">
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address" placeholder="Street address" required />
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-field">
+                <label for="address-2">Apartment, Suite, etc. (optional)</label>
+                <input type="text" id="address-2" name="address2" placeholder="Apt, Suite, Unit" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" placeholder="City" required />
+              </div>
+              <div class="form-field">
+                <label for="state">State</label>
+                <input type="text" id="state" name="state" placeholder="State" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="zip">ZIP Code</label>
+                <input type="text" id="zip" name="zip" placeholder="00000" required />
+              </div>
+              <div class="form-field">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" placeholder="(000) 000-0000" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment -->
+          <div class="form-section">
+            <div class="form-section-title">Payment</div>
+            <div class="form-row full">
+              <div class="form-field">
+                <label for="card-number">Card Number</label>
+                <input type="text" id="card-number" name="cardNumber" placeholder="0000 0000 0000 0000" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="card-expiry">Expiration</label>
+                <input type="text" id="card-expiry" name="cardExpiry" placeholder="MM / YY" required />
+              </div>
+              <div class="form-field">
+                <label for="card-cvc">CVC</label>
+                <input type="text" id="card-cvc" name="cardCvc" placeholder="000" required />
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-field">
+                <label for="card-name">Name on Card</label>
+                <input type="text" id="card-name" name="cardName" placeholder="Full name" required />
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Order Summary -->
+        <aside class="order-summary" id="order-summary">
+          <div class="summary-title">Order Summary</div>
+
+          <div class="summary-items" id="summary-items">
+            <!-- Populated by JS -->
+            <div class="summary-item" style="color: var(--color-text-tertiary); font-size: 0.8rem;">
+              Loading cart...
+            </div>
+          </div>
+
+          <div class="summary-line">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">$0.00</span>
+          </div>
+          <div class="summary-line shipping">
+            <span>Shipping (Flat Rate)</span>
+            <span id="summary-shipping">$6.00</span>
+          </div>
+          <div class="summary-line total">
+            <span>Total</span>
+            <span id="summary-total">$0.00</span>
+          </div>
+
+          <!-- Express Payment -->
+          <div class="express-payment" id="express-payment">
+            <div class="express-title">Express Checkout</div>
+            <div class="express-buttons">
+              <button class="express-btn apple-pay" id="btn-apple-pay" type="button">
+                &#xF8FF; Apple Pay
+              </button>
+              <button class="express-btn google-pay" id="btn-google-pay" type="button">
+                G Pay
+              </button>
+              <button class="express-btn paypal" id="btn-paypal" type="button">
+                PayPal
+              </button>
+            </div>
+          </div>
+
+          <button class="place-order-btn" id="place-order-btn" type="submit" form="checkout-form">
+            Place Order
+          </button>
+        </aside>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const CART_KEY = 'index000_cart';
+    const SHIPPING = 6.00;
+
+    function getCart() {
+      try {
+        const raw = localStorage.getItem(CART_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch { return []; }
+    }
+
+    function formatPrice(n) {
+      return `$${n.toFixed(2)}`;
+    }
+
+    function renderSummary() {
+      const cart = getCart();
+      const itemsEl = document.getElementById('summary-items');
+      const subtotalEl = document.getElementById('summary-subtotal');
+      const shippingEl = document.getElementById('summary-shipping');
+      const totalEl = document.getElementById('summary-total');
+
+      if (!itemsEl) return;
+
+      if (cart.length === 0) {
+        itemsEl.innerHTML = '<div style="color: var(--color-text-tertiary); font-size: 0.8rem;">Your bag is empty</div>';
+        subtotalEl.textContent = '$0.00';
+        shippingEl.textContent = '$0.00';
+        totalEl.textContent = '$0.00';
+        return;
+      }
+
+      let html = '';
+      let subtotal = 0;
+      cart.forEach(item => {
+        const lineTotal = item.price * item.quantity;
+        subtotal += lineTotal;
+        html += `
+          <div class="summary-item">
+            <div class="summary-item-info">
+              <div class="summary-item-title">${item.title}</div>
+              <div class="summary-item-meta">Size: ${item.size} &middot; Qty: ${item.quantity}</div>
+            </div>
+            <div class="summary-item-price">${formatPrice(lineTotal)}</div>
+          </div>
+        `;
+      });
+
+      itemsEl.innerHTML = html;
+      subtotalEl.textContent = formatPrice(subtotal);
+      shippingEl.textContent = formatPrice(SHIPPING);
+      totalEl.textContent = formatPrice(subtotal + SHIPPING);
+    }
+
+    // Detect express payments for mobile
+    function setupExpressPayments() {
+      const appleBtn = document.getElementById('btn-apple-pay');
+      const googleBtn = document.getElementById('btn-google-pay');
+
+      // Show/hide based on platform detection
+      if (appleBtn) {
+        const canApplePay = !!(window.ApplePaySession && ApplePaySession.canMakePayments && ApplePaySession.canMakePayments());
+        if (!canApplePay) appleBtn.style.display = 'none';
+      }
+      if (googleBtn) {
+        const isAndroid = /android/i.test(navigator.userAgent);
+        if (!isAndroid) googleBtn.style.display = 'none';
+      }
+    }
+
+    // Form validation scaffold
+    const form = document.getElementById('checkout-form');
+    const placeOrderBtn = document.getElementById('place-order-btn');
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cart = getCart();
+        if (cart.length === 0) {
+          alert('Your bag is empty.');
+          return;
+        }
+        // In production, this would POST to a Cloudflare Worker endpoint
+        // for secure payment processing and inventory validation
+        placeOrderBtn.textContent = 'PROCESSING...';
+        placeOrderBtn.disabled = true;
+
+        setTimeout(() => {
+          alert('Thank you for your order! This is a demo — no payment was processed.');
+          localStorage.removeItem(CART_KEY);
+          window.location.href = '/';
+        }, 2000);
+      });
+    }
+
+    // PayPal button handler
+    const paypalBtn = document.getElementById('btn-paypal');
+    if (paypalBtn) {
+      paypalBtn.addEventListener('click', () => {
+        // In production, initialize PayPal SDK and create order
+        alert('PayPal checkout would be initialized here via PayPal Smart Buttons SDK.');
+      });
+    }
+
+    renderSummary();
+    setupExpressPayments();
+
+    // Listen for cart updates
+    window.addEventListener('cart-updated', renderSummary);
+  });
+</script>

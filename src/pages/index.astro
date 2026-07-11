@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Home" description="INDEX_000 — A study in daily wear. Collection 01. 006 Pieces. No Re-Stocks.">
+
+  <!-- Hero Section: 50/50 Split -->
+  <section class="hero">
+    <div class="hero__left">
+      <h1 class="hero__title">DROP_01 // 006 PIECES</h1>
+    </div>
+    <div class="hero__right">
+      <div class="hero__editorial">
+        <span class="hero__editorial-label">EDITORIAL</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sub-Hero Marquee Banner -->
+  <div class="ticker">
+    <div class="ticker__track">
+      <span class="ticker__text">COLLECTION_01 // 006 PIECES. NO RE-STOCKS.&nbsp;&nbsp;&nbsp;—&nbsp;&nbsp;&nbsp;</span>
+      <span class="ticker__text">COLLECTION_01 // 006 PIECES. NO RE-STOCKS.&nbsp;&nbsp;&nbsp;—&nbsp;&nbsp;&nbsp;</span>
+      <span class="ticker__text">COLLECTION_01 // 006 PIECES. NO RE-STOCKS.&nbsp;&nbsp;&nbsp;—&nbsp;&nbsp;&nbsp;</span>
+      <span class="ticker__text">COLLECTION_01 // 006 PIECES. NO RE-STOCKS.&nbsp;&nbsp;&nbsp;—&nbsp;&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- Archive Entry -->
+  <section class="archive-entry">
+    <a href="/shop" class="archive-entry__link">ENTER THE ARCHIVE →</a>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* ---- Hero Section ---- */
+  .hero {
+    display: flex;
+    min-height: 70vh;
+    animation: slideInContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .hero__left {
+    width: 50%;
+    min-height: 70vh;
+    background-color: var(--color-bg-primary, #1A1A1A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: slideInFromLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  }
+
+  .hero__title {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: clamp(0.9rem, 1.8vw, 1.5rem);
+    color: var(--color-text-primary, #EBEAE5);
+    white-space: nowrap;
+    animation: fadeInUpText 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+  }
+
+  .hero__right {
+    width: 50%;
+    min-height: 70vh;
+    background-color: var(--color-bg-primary, #1A1A1A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl, 2rem);
+    animation: slideInFromRight 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+  }
+
+  .hero__editorial {
+    width: 100%;
+    height: 100%;
+    min-height: calc(70vh - 4rem);
+    background-color: var(--color-bg-surface, #2B2C2C);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .hero__editorial-label {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
+    text-transform: uppercase;
+    animation: fadeInUpText 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+  }
+
+  /* ---- Marquee Ticker ---- */
+  .ticker {
+    background-color: var(--color-bg-surface, #2B2C2C);
+    padding: 1rem 0;
+    overflow: hidden;
+    border-top: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    border-bottom: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+  }
+
+  .ticker__track {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker 20s linear infinite;
+    width: max-content;
+  }
+
+  .ticker__text {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary, rgba(235, 234, 229, 0.6));
+    flex-shrink: 0;
+  }
+
+  /* ---- Archive Entry ---- */
+  .archive-entry {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-5xl, 8rem) var(--space-xl, 2rem);
+    animation: fadeInUpText 1s cubic-bezier(0.16, 1, 0.3, 1) 1s both;
+  }
+
+  .archive-entry__link {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-primary, #EBEAE5);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 0.25rem;
+    transition: color var(--transition-base, 300ms cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .archive-entry__link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--color-text-primary, #EBEAE5);
+    transition: width var(--transition-base, 300ms cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .archive-entry__link:hover::after {
+    width: 100%;
+  }
+
+  .archive-entry__link:hover {
+    color: var(--color-accent, #EBEAE5);
+  }
+
+  /* ---- Scoped Keyframes ---- */
+  @keyframes fadeInUpText {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInContainer {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes ticker {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 767px) {
+    .hero {
+      flex-direction: column;
+    }
+
+    .hero__left,
+    .hero__right {
+      width: 100%;
+      min-height: 50vh;
+    }
+
+    .hero__right {
+      padding: var(--space-lg, 1.5rem);
+    }
+
+    .hero__editorial {
+      min-height: calc(50vh - 3rem);
+    }
+
+    .hero__title {
+      font-size: clamp(0.75rem, 4vw, 1.1rem);
+    }
+
+    .archive-entry {
+      padding: var(--space-3xl, 4rem) var(--space-lg, 1.5rem);
+    }
+  }
+</style>

@@ -1,0 +1,152 @@
+[
+  {
+    "id": "idx-001",
+    "slug": "index-tee-001",
+    "title": "INDEX_TEE 001",
+    "subtitle": "GRAPHIC HEAVYWEIGHT",
+    "price": 78,
+    "images": {
+      "primary": "/assets/shirt-1.jpg",
+      "detail": "/assets/shirt-1-detail.jpg",
+      "back": "/assets/shirt-1-back.jpg"
+    },
+    "sizes": {
+      "S": 4,
+      "M": 8,
+      "L": 12,
+      "XL": 6,
+      "XXL": 3
+    },
+    "specs": [
+      "280 GSM HEAVYWEIGHT COTTON",
+      "PRE-SHRUNK BOXY SILHOUETTE",
+      "SUBTLE SCREEN-PRINTED GRAPHIC"
+    ],
+    "color": "WASHED BLACK"
+  },
+  {
+    "id": "idx-002",
+    "slug": "index-tee-002",
+    "title": "INDEX_TEE 002",
+    "subtitle": "MINIMAL ESSENTIAL",
+    "price": 72,
+    "images": {
+      "primary": "/assets/shirt-2.jpg",
+      "detail": "/assets/shirt-2-detail.jpg",
+      "back": "/assets/shirt-2-back.jpg"
+    },
+    "sizes": {
+      "S": 6,
+      "M": 10,
+      "L": 8,
+      "XL": 4,
+      "XXL": 2
+    },
+    "specs": [
+      "280 GSM HEAVYWEIGHT COTTON",
+      "PRE-SHRUNK BOXY SILHOUETTE",
+      "TONAL EMBROIDERED DETAIL"
+    ],
+    "color": "BONE WHITE"
+  },
+  {
+    "id": "idx-003",
+    "slug": "index-tee-003",
+    "title": "INDEX_TEE 003",
+    "subtitle": "ARCHIVE PRINT",
+    "price": 82,
+    "images": {
+      "primary": "/assets/shirt-3.jpg",
+      "detail": "/assets/shirt-3-detail.jpg",
+      "back": "/assets/shirt-3-back.jpg"
+    },
+    "sizes": {
+      "S": 3,
+      "M": 7,
+      "L": 9,
+      "XL": 5,
+      "XXL": 2
+    },
+    "specs": [
+      "280 GSM HEAVYWEIGHT COTTON",
+      "PRE-SHRUNK BOXY SILHOUETTE",
+      "FULL BACK PANEL GRAPHIC"
+    ],
+    "color": "ASPHALT GREY"
+  },
+  {
+    "id": "idx-004",
+    "slug": "index-tee-004",
+    "title": "INDEX_TEE 004",
+    "subtitle": "STRUCTURAL CUT",
+    "price": 85,
+    "images": {
+      "primary": "/assets/shirt-4.jpg",
+      "detail": "/assets/shirt-4-detail.jpg",
+      "back": "/assets/shirt-4-back.jpg"
+    },
+    "sizes": {
+      "S": 5,
+      "M": 9,
+      "L": 11,
+      "XL": 7,
+      "XXL": 3
+    },
+    "specs": [
+      "280 GSM HEAVYWEIGHT COTTON",
+      "EXTENDED DROP SHOULDER",
+      "CONTRAST INTERIOR NECK TAPE"
+    ],
+    "color": "CEMENT"
+  },
+  {
+    "id": "idx-005",
+    "slug": "index-tee-005",
+    "title": "INDEX_TEE 005",
+    "subtitle": "RAW EDGE",
+    "price": 76,
+    "images": {
+      "primary": "/assets/shirt-5.jpg",
+      "detail": "/assets/shirt-5-detail.jpg",
+      "back": "/assets/shirt-5-back.jpg"
+    },
+    "sizes": {
+      "S": 2,
+      "M": 6,
+      "L": 8,
+      "XL": 4,
+      "XXL": 1
+    },
+    "specs": [
+      "280 GSM HEAVYWEIGHT COTTON",
+      "RAW CUT HEM FINISH",
+      "WOVEN LABEL AT CENTER BACK"
+    ],
+    "color": "FADED BLACK"
+  },
+  {
+    "id": "idx-006",
+    "slug": "index-tee-006",
+    "title": "INDEX_TEE 006",
+    "subtitle": "CORE BLANK",
+    "price": 68,
+    "images": {
+      "primary": "/assets/shirt-6.jpg",
+      "detail": "/assets/shirt-6-detail.jpg",
+      "back": "/assets/shirt-6-back.jpg"
+    },
+    "sizes": {
+      "S": 8,
+      "M": 12,
+      "L": 14,
+      "XL": 8,
+      "XXL": 4
+    },
+    "specs": [
+      "280 GSM HEAVYWEIGHT COTTON",
+      "PRE-SHRUNK BOXY SILHOUETTE",
+      "BLANK — NO GRAPHIC"
+    ],
+    "color": "CHARCOAL"
+  }
+]

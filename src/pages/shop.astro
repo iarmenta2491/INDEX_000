@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Footer from '../components/Footer.astro';
+import products from '../data/products.json';
+---
+
+<BaseLayout title="Shop" description="Browse the INDEX_000 Collection 01. 006 heavyweight pieces. No re-stocks.">
+
+  <!-- Page Title -->
+  <section class="shop-header">
+    <h1 class="shop-header__title">COLLECTION_01</h1>
+    <p class="shop-header__subtitle">006 PIECES — LIMITED PRODUCTION</p>
+  </section>
+
+  <!-- Product Feed: Asymmetric Alternating Grid -->
+  <section class="product-feed">
+    {/* Row 1: Large left, Small right (pushed down) */}
+    <div class="product-row product-row--large-left">
+      <div class="product-cell product-cell--large">
+        <ProductCard product={products[0]} variant="large" index={0} />
+      </div>
+      <div class="product-cell product-cell--small product-cell--pushed">
+        <ProductCard product={products[1]} variant="small" index={1} />
+      </div>
+    </div>
+
+    {/* Row 2: Small left, Large right */}
+    <div class="product-row product-row--large-right">
+      <div class="product-cell product-cell--small">
+        <ProductCard product={products[2]} variant="small" index={2} />
+      </div>
+      <div class="product-cell product-cell--large">
+        <ProductCard product={products[3]} variant="large" index={3} />
+      </div>
+    </div>
+
+    {/* Row 3: Large left, Small right (pushed down) */}
+    <div class="product-row product-row--large-left">
+      <div class="product-cell product-cell--large">
+        <ProductCard product={products[4]} variant="large" index={4} />
+      </div>
+      <div class="product-cell product-cell--small product-cell--pushed">
+        <ProductCard product={products[5]} variant="small" index={5} />
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+
+</BaseLayout>
+
+<style>
+  /* ---- Shop Header ---- */
+  .shop-header {
+    padding: var(--space-4xl, 6rem) var(--gutter, clamp(1rem, 4vw, 3rem)) var(--space-3xl, 4rem);
+    animation: fadeInUpShop 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .shop-header__title {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 4rem);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-text-primary, #EBEAE5);
+    line-height: 1.1;
+  }
+
+  .shop-header__subtitle {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 400;
+    font-size: clamp(0.75rem, 1vw, 0.9rem);
+    color: var(--color-text-secondary, rgba(235, 234, 229, 0.6));
+    letter-spacing: 0.08em;
+    margin-top: var(--space-md, 1rem);
+    text-transform: uppercase;
+  }
+
+  /* ---- Product Feed ---- */
+  .product-feed {
+    padding: 0 var(--gutter, clamp(1rem, 4vw, 3rem));
+    max-width: var(--max-width, 1440px);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xl, 4rem);
+    padding-bottom: var(--space-5xl, 8rem);
+  }
+
+  /* ---- Product Row ---- */
+  .product-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl, 2rem);
+    align-items: start;
+  }
+
+  /* ---- Product Cells ---- */
+  .product-cell--pushed {
+    margin-top: 40px;
+  }
+
+  /* ---- Animation Delays per Row ---- */
+  .product-row:nth-child(1) {
+    animation: fadeInUpShop 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  }
+
+  .product-row:nth-child(2) {
+    animation: fadeInUpShop 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  }
+
+  .product-row:nth-child(3) {
+    animation: fadeInUpShop 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+  }
+
+  /* ---- Scoped Keyframes ---- */
+  @keyframes fadeInUpShop {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 767px) {
+    .shop-header {
+      padding: var(--space-3xl, 4rem) var(--gutter, clamp(1rem, 4vw, 3rem)) var(--space-xl, 2rem);
+    }
+
+    .product-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2xl, 3rem);
+    }
+
+    .product-cell--pushed {
+      margin-top: 0;
+    }
+
+    .product-feed {
+      gap: var(--space-2xl, 3rem);
+      padding-bottom: var(--space-3xl, 4rem);
+    }
+  }
+</style>

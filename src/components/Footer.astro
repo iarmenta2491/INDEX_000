@@ -1,0 +1,100 @@
+---
+// Footer.astro — Site footer with about section and social links
+---
+
+<footer class="site-footer" id="about">
+  <div class="footer-inner">
+    <div class="footer-about">
+      <h2 class="footer-heading">ABOUT</h2>
+      <p class="footer-body">
+        A study in daily wear. Collection 01 focuses on deliberate cuts, heavy-weight
+        textiles, and subtle visual graphics. Built to be worn frequently, designed to
+        go unnoticed.
+      </p>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 INDEX_000</span>
+      <div class="footer-social">
+        <a href="https://instagram.com" class="social-link" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
+        <a href="https://twitter.com" class="social-link" target="_blank" rel="noopener noreferrer">TWITTER</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+    background: var(--color-bg-primary, #1A1A1A);
+    padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem);
+  }
+
+  .footer-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* ── About ── */
+  .footer-about {
+    max-width: 560px;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .footer-heading {
+    font-family: var(--font-heading, 'JetBrains Mono', monospace);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-accent, #EBEAE5);
+    margin: 0 0 1.25rem;
+  }
+
+  .footer-body {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: rgba(235, 234, 229, 0.6);
+    margin: 0;
+  }
+
+  /* ── Bottom Row ── */
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border, rgba(235, 234, 229, 0.15));
+  }
+
+  .footer-copy {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: rgba(235, 234, 229, 0.4);
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .social-link {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: rgba(235, 234, 229, 0.5);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .social-link:hover {
+    color: var(--color-accent, #EBEAE5);
+  }
+</style>
