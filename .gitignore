@@ -4,9 +4,12 @@ dist/
 # dependencies
 node_modules/
 
-# environment
+# environment (secrets - never commit)
 .env
 .env.*
+!.env.example
+.dev.vars
+.dev.vars.*
 
 # IDE
 .vscode/
