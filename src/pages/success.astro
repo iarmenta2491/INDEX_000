@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Order Confirmed" description="Your INDEX_000 order has been confirmed.">
+  <section class="success">
+    <p class="success__tag">STATUS // 200</p>
+    <h1 class="success__title">ORDER<br />CONFIRMED</h1>
+    <p class="success__text">
+      YOUR PAYMENT HAS BEEN SECURELY PROCESSED. TRACKING DETAILS WILL BE ROUTED SHORTLY.
+    </p>
+    <a href="/" class="success__btn">RETURN TO SHOP</a>
+  </section>
+</BaseLayout>
+
+<script>
+  // Order is complete: empty the bag and reset every cart counter.
+  try {
+    localStorage.removeItem('index000_cart');
+  } catch {
+    /* storage unavailable */
+  }
+  document.querySelectorAll('.cart-badge').forEach((el) => {
+    el.textContent = '0';
+  });
+  window.dispatchEvent(new CustomEvent('cart-updated'));
+</script>
+
+<style>
+  .success {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--space-xl, 2rem);
+    padding: var(--space-4xl, 6rem) var(--gutter, clamp(1rem, 4vw, 3rem));
+    max-width: var(--max-width, 1440px);
+    margin: 0 auto;
+  }
+
+  .success__tag {
+    font-family: var(--font-body, 'Space Mono', monospace);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--color-text-tertiary, rgba(235, 234, 229, 0.3));
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .success__title {
+    font-family: var(--font-heading, 'Clash Display', sans-serif);
+    font-weight: 700;
+    font-size: clamp(3rem, 14vw, 11rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-primary, #EBEAE5);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  }
+
+  .success__text {
+    font-family: var(--font-body, 'Space Mono', monospace);
+    font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    max-width: 52ch;
+    color: var(--color-text-secondary, rgba(235, 234, 229, 0.6));
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  }
+
+  .success__btn {
+    display: inline-block;
+    padding: 1.1rem 2.5rem;
+    background: var(--color-accent, #EBEAE5);
+    color: var(--color-bg-primary, #1A1A1A);
+    border: 1px solid var(--color-accent, #EBEAE5);
+    font-family: var(--font-body, 'Space Mono', monospace);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background var(--transition-fast, 150ms), color var(--transition-fast, 150ms);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  }
+
+  .success__btn:hover {
+    background: transparent;
+    color: var(--color-accent, #EBEAE5);
+  }
+
+  @media (max-width: 768px) {
+    .success__btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

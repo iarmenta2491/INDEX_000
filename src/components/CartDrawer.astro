@@ -38,7 +38,8 @@
       </div>
     </div>
 
-    <button class="btn-checkout" type="button">CHECKOUT</button>
+    <div class="inline-alert" id="cart-alert" role="alert" hidden></div>
+    <button class="btn-checkout" id="cart-checkout" type="button">CHECKOUT</button>
 
     <div class="express-section">
       <span class="express-label">EXPRESS CHECKOUT</span>
@@ -52,6 +53,8 @@
 </aside>
 
 <script>
+  import { startCheckout, clearAlert } from '../scripts/checkout-client.js';
+
   const STORAGE_KEY = 'index000_cart';
   const overlay = document.getElementById('cart-overlay') as HTMLDivElement;
   const drawer = document.getElementById('cart-drawer') as HTMLElement;
@@ -203,7 +206,21 @@
 
   // Listen for custom 'cart-updated' events from other components
   window.addEventListener('cart-updated', () => {
+    clearAlert(cartAlert);
     renderCart();
+  });
+
+  // Checkout → Stripe (drawer button + express buttons share the same hosted flow)
+  const cartAlert = document.getElementById('cart-alert');
+  const checkoutBtns = [
+    document.getElementById('cart-checkout'),
+    ...document.querySelectorAll('.express-btn'),
+  ].filter(Boolean) as HTMLButtonElement[];
+
+  checkoutBtns.forEach((btn) => {
+    btn.addEventListener('click', () =>
+      startCheckout({ buttons: checkoutBtns, trigger: btn, alertEl: cartAlert })
+    );
   });
 
   // Initial badge count

@@ -279,3 +279,16 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Stripe handoff notice --- */
+.checkout-note {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.checkout-note + .checkout-note {
+  margin-top: var(--space-md);
+}
